@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>ed-ge, the Education Game Engine</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canv" width="640px" height="480px"></canvas>
+
+
+  <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@59428217a8f15506d6185c7b3a61f9f2d02af8bb/free/Main.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@4b3e4cdfe5d3cbeca10ebdad3c70dd70d2d3a48a/free/Base.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@dev/free/Components.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@cb22a5a539f2e9acaeaa0a6c2a47a985efa17f05/free/Prefabs.js"></script>
+
+
+  <script type="module">
+    //import Scenes from "./Scenes.js"
+    let Scenes = {
+      startScene: "StartScene",
+      allScenes: [
+        {
+          name: "StartScene",
+          objects: [
+            {
+              name: "Circle",
+              location: { x: 0, y: 0 },
+              type: "Circle",
+              componentValues: [
+                {
+                  type: "CircleComponent",
+                  values: [
+                    {
+                      key: "radius",
+                      value: "1",
+                    },
+
+                    {
+                      key: "fill",
+                      value: "black"
+                    }
+                  ]
+                }
+              ],
+              components: [
+                {
+                  type: "BallBehavior"
+                }
+              ]
+
+            },
+            {
+              name: "RectangleLeft",
+              location: { x: -10, y: 0 },
+              scale: { x: .01, y: .2 },
+              type: "Rectangle",
+            },
+            {
+              name: "RectangleRight",
+              location: { x: 10, y: 0 },
+              scale: { x: .01, y: .2 },
+              type: "Rectangle",
+            },
+            {
+              name: "RectangleTop",
+              location: { x: 0, y: -10 },
+              scale: { x: .2, y: .01 },
+              type: "Rectangle",
+            },
+            {
+              name: "Paddle",
+              location: { x: 0, y: 10 },
+              scale: { x: .05, y: .01 },
+              type: "Rectangle",
+              componentValues: [
+                {
+                  type: "RectangleComponent",
+                  values: [
+                    {
+                      key: "fill",
+                      value: "orange",
+                    }
+                  ]
+                }
+              ],
+              components: [
+                {
+                  type: "MovementBehavior",
+                }
+              ]
+            },
+            {
+              name: "Camera",
+              location: { x: 0, y: 0 },
+              scale: { x: 10, y: 10 },
+              type: "Camera",
+            },
+
+
+          ]
+        }
+      ]
+    }
+
+    let GameObjects = {
+
+    }
+
+    let GameBehaviors = {
+      MovementBehavior: class MovementBehavior extends Base.Behavior {
+        start() {
+          this.speed = .5;
+
+        }
+        update() {
+
+
+
+          if (Base.Input.keys['ArrowLeft']) {
+            this.gameObject.x -= this.speed
+          }
+          if (Base.Input.keys['ArrowRight']) {
+            this.gameObject.x += this.speed
+          }
+          let extents = 10 - 2.5;
+          if (this.gameObject.x < -extents) {
+            this.gameObject.x = -extents;
+          }
+          if (this.gameObject.x > extents) {
+            this.gameObject.x = extents
+          }
+
+        }
+      },
+      BallBehavior: class BallBehavior extends Base.Behavior {
+        start() {
+          this.speed = .4;
+          this.angle = -1;
+          this.sceneChangeCountDown = 5;
+
+
+        }
+        update() {
+          this.paddle = Base.SceneManager.currentScene.findByName("Paddle");
+            let x = Math.cos(this.angle);
+            let y = Math.sin(this.angle);
+            this.gameObject.x += x * this.speed;
+            this.gameObject.y += y * this.speed;
+
+          if (this.paddle) {
+            let extents = 10 - 1;
+            if (this.gameObject.x > extents) {
+              this.angle = Math.atan2(y, -x);
+              this.gameObject.x = extents - .01;
+            }
+            if (this.gameObject.x < -extents) {
+              this.angle = Math.atan2(y, -x);
+              this.gameObject.x = -extents + .01
+            }
+            if (this.gameObject.y < -extents) {
+              this.angle = Math.atan2(-y, x);
+              this.gameObject.y = -extents + .01
+            }
+
+            if (this.gameObject.y > extents) {
+              if (Math.abs(this.paddle.x - this.gameObject.x) < 2.5){
+                this.angle = Math.atan2(-y, x);
+                this.speed *= 1.1;
+              }
+              else{
+                Base.SceneManager.destroy(this.paddle);
+              }
+            }
+
+          }
+          else{
+            this.sceneChangeCountDown -= .1;
+            if(this.sceneChangeCountDown <= 0){
+                Base.SceneManager.currentScene = 0;
+            }
+          }
+        }
+      }
+    }
+
+
+
+    Main(Base, Components, Prefabs, GameObjects, GameBehaviors, Scenes);
+
+  </script>
+</body>
+
+</html>
