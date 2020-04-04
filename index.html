@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>ed-ge, the Education Game Engine</title>
+  <title>ed-ge: Pong</title>
   <style>
     html,
     body {
@@ -18,15 +18,12 @@
   <canvas id="canv" width="640px" height="480px"></canvas>
 
 
-  <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@59428217a8f15506d6185c7b3a61f9f2d02af8bb/free/Main.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@4b3e4cdfe5d3cbeca10ebdad3c70dd70d2d3a48a/free/Base.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@dev/free/Components.js"></script>
-  <script
-    src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@cb22a5a539f2e9acaeaa0a6c2a47a985efa17f05/free/Prefabs.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@dev/free/Base.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@0dev/free/Base.js"></script> -->
 
   <script type="module">
-    //import Scenes from "./Scenes.js"
+
     let Scenes = {
       startScene: "StartScene",
       allScenes: [
@@ -34,9 +31,7 @@
           name: "StartScene",
           objects: [
             {
-              name: "Circle",
-              location: { x: 0, y: 0 },
-              type: "Circle",
+              def: "Circle",
               componentValues: [
                 {
                   type: "CircleComponent",
@@ -45,7 +40,6 @@
                       key: "radius",
                       value: "1",
                     },
-
                     {
                       key: "fill",
                       value: "black"
@@ -61,28 +55,16 @@
 
             },
             {
-              name: "RectangleLeft",
-              location: { x: -10, y: 0 },
-              scale: { x: .01, y: .2 },
-              type: "Rectangle",
+              def: "RectangleLeft, -10, 0, .01, .2, Rectangle",
             },
             {
-              name: "RectangleRight",
-              location: { x: 10, y: 0 },
-              scale: { x: .01, y: .2 },
-              type: "Rectangle",
+              def: "RectangleRight, 10, 0, .01, .2, Rectangle",
             },
             {
-              name: "RectangleTop",
-              location: { x: 0, y: -10 },
-              scale: { x: .2, y: .01 },
-              type: "Rectangle",
+              def: "RectangleTop, 0, -10, .2, .01, Rectangle",
             },
             {
-              name: "Paddle",
-              location: { x: 0, y: 10 },
-              scale: { x: .05, y: .01 },
-              type: "Rectangle",
+              def:"Paddle, 0, 10, .05, .01, Rectangle",
               componentValues: [
                 {
                   type: "RectangleComponent",
@@ -101,13 +83,8 @@
               ]
             },
             {
-              name: "Camera",
-              location: { x: 0, y: 0 },
-              scale: { x: 10, y: 10 },
-              type: "Camera",
+              def:"Camera, 0, 0, 10, 10, Camera",
             },
-
-
           ]
         }
       ]
@@ -153,10 +130,10 @@
         }
         update() {
           this.paddle = Base.SceneManager.currentScene.findByName("Paddle");
-            let x = Math.cos(this.angle);
-            let y = Math.sin(this.angle);
-            this.gameObject.x += x * this.speed;
-            this.gameObject.y += y * this.speed;
+          let x = Math.cos(this.angle);
+          let y = Math.sin(this.angle);
+          this.gameObject.x += x * this.speed;
+          this.gameObject.y += y * this.speed;
 
           if (this.paddle) {
             let extents = 10 - 1;
@@ -174,20 +151,20 @@
             }
 
             if (this.gameObject.y > extents) {
-              if (Math.abs(this.paddle.x - this.gameObject.x) < 2.5){
+              if (Math.abs(this.paddle.x - this.gameObject.x) < 2.5) {
                 this.angle = Math.atan2(-y, x);
                 this.speed *= 1.1;
               }
-              else{
+              else {
                 Base.SceneManager.destroy(this.paddle);
               }
             }
 
           }
-          else{
+          else {
             this.sceneChangeCountDown -= .1;
-            if(this.sceneChangeCountDown <= 0){
-                Base.SceneManager.currentScene = 0;
+            if (this.sceneChangeCountDown <= 0) {
+              Base.SceneManager.currentScene = 0;
             }
           }
         }
@@ -196,7 +173,7 @@
 
 
 
-    Main(Base, Components, Prefabs, GameObjects, GameBehaviors, Scenes);
+    Base.main(GameObjects, GameBehaviors, Scenes);
 
   </script>
 </body>
