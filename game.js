@@ -6,18 +6,8 @@ let Scenes = {
       objects: [
         {
           def: "Circle",
-          componentValues: [
-            {
-              type: "CircleComponent",
-              values: ["radius, 1", "fill,black"]
-            }
-          ],
-          components: [
-            {
-              type: "BallBehavior"
-            }
-          ]
-
+          componentValues: ["CircleComponent,radius, 1", "CircleComponent,fill,black"],
+          components: ["BallBehavior"]
         },
         {
           def: "RectangleLeft, -10, 0, .01, .2, Rectangle",
@@ -30,17 +20,8 @@ let Scenes = {
         },
         {
           def: "Paddle, 0, 10, .05, .01, Rectangle",
-          componentValues: [
-            {
-              type: "RectangleComponent",
-              values: ["fill,orange"]
-            }
-          ],
-          components: [
-            {
-              type: "MovementBehavior",
-            }
-          ]
+          componentValues: ["RectangleComponent,fill,orange"],
+          components: ["MovementBehavior"]
         },
         {
           def: "Camera, 0, 0, 10, 10, Camera",
@@ -81,8 +62,6 @@ let GameBehaviors = {
       this.speed = .4;
       this.angle = -1;
       this.sceneChangeCountDown = 5;
-
-
     }
     update() {
       this.paddle = Base.SceneManager.currentScene.findByName("Paddle");
