@@ -6,12 +6,12 @@ let Scenes = {
       objects: [
         {
           def: "Circle",
-          componentValues: ["CircleComponent,radius, 1", "CircleComponent,fill,black"],
+          componentValues: ["CircleComponent|radius| 1", "CircleComponent|fill|black"],
           components: ["BallBehavior"]
         },
         {
           def: "Paddle, 0, 10, .05, .01, Rectangle",
-          componentValues: ["RectangleComponent,fill,orange"],
+          componentValues: ["RectangleComponent|fill|orange"],
           components: ["MovementBehavior"]
         },
         { def: "RectangleLeft, -10, 0, .01, .2, Rectangle", },
@@ -31,6 +31,7 @@ let GameBehaviors = {
     update() {
       if (Base.Input.keys['ArrowLeft']) { this.gameObject.x -= +this.speed }
       if (Base.Input.keys['ArrowRight']) { this.gameObject.x += +this.speed }
+      this.gameObject.x += Base.Input.getMousePositionDelta().x/50;
       let extents = 10 - 2.5;
       if (this.gameObject.x < -extents) { this.gameObject.x = -extents; }
       if (this.gameObject.x > extents) { this.gameObject.x = extents }
