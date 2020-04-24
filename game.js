@@ -29,9 +29,10 @@ let GameBehaviors = {
       this.speed = .5;
     }
     update() {
+      this.camera = Base.SceneManager.currentScene.findByName("Camera");
       if (Base.Input.keys['ArrowLeft']) { this.gameObject.x -= +this.speed }
       if (Base.Input.keys['ArrowRight']) { this.gameObject.x += +this.speed }
-      this.gameObject.x += Base.Input.getMousePositionDelta().x/50;
+      this.gameObject.x += Base.Input.getTouchMove()[0].x/this.camera.scaleX;
       let extents = 10 - 2.5;
       if (this.gameObject.x < -extents) { this.gameObject.x = -extents; }
       if (this.gameObject.x > extents) { this.gameObject.x = extents }
